@@ -11,7 +11,7 @@ if [ ! -f /vpn/client.ovpn ]; then
 fi
 
 # Set IP tables rules
-iptables -t nat -A PREROUTING -i tun0 -j DNAT --to-destination ${HOSTIP} > /dev/null 2>&1
+iptables -t nat -A PREROUTING -i eth0 -j DNAT --to-destination ${HOSTIP} > /dev/null 2>&1
 
 ## ...and check for privileged access real quickly like
 if ! [ $? -eq 0 ]; then
@@ -19,12 +19,9 @@ if ! [ $? -eq 0 ]; then
     exit 1;
 fi
 
+iptables -t nat -A PREROUTING -i tun0 -j DNAT --to-destination ${HOSTIP}
 iptables -t nat -A POSTROUTING -j MASQUERADE
 
-# Setup masquerade, to allow using the container as a gateway
-for iface in $(ip a | grep eth | grep inet | awk '{print $2}'); do
-  iptables -t nat -A POSTROUTING -s "$iface" -j MASQUERADE
-done
 
 # VPN Loop
 while [ true ]; do
