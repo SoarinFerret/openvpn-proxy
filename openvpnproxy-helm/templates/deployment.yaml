@@ -24,13 +24,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
-            privileged: true
             capabilities:
               add:
                 - "NET_ADMIN"
-          volumeMounts:
-          - mountPath: /dev/net/tun
-            name: dev-net-tun
           env:
           - name: HOSTIP
             value: {{ .Values.hostip  | quote }}
@@ -63,7 +59,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      volumes:
-        - name: dev-net-tun
-          hostPath:
-            path: /dev/net/tun
