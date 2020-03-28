@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  openvpnproxy:
+    image: soarinferret/openvpn-proxy:latest
+    container_name: openvpn_proxy
+    restart: always
+    volumes:
+      - './client.ovpn:/vpn/client.ovpn'
+    environment:
+      HOSTIP: '1.1.1.1'
+    cap_add:
+      - NET_ADMIN
+
+
